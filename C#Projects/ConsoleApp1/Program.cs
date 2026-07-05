@@ -11,7 +11,7 @@ public class HelloWorld
         o center|g center|r center|b center|
                 |y center|
         */
-        //View it as the folded mesh looks like
+        //View it as the unfolded cube
         string[][,] cube =
         [
             new string[3, 3]
@@ -35,34 +35,82 @@ public class HelloWorld
                  {"b","b","b"},
                  {"o","w","b"}},
             new string[3, 3]
-                {{"g","g","g"}, //Yellow center (White->Green->Yellow)
+                {{"g","g","g"}, //Yellow center
                  {"w","y","g"},
                  {"w","o","b"}},
         ];
         CubeAlgos.Print(cube);
-
+        CubeAlgos.RotateRight(cube);
+        Console.WriteLine("      -------");
+        Console.WriteLine("      -------");
+        CubeAlgos.Print(cube);
     }
 }
 class CubeAlgos
 {
-    public static void Rotate2dArray(string[,] square)
+    //color constants
+    private const int white = 0;
+    private const int orange = 1;
+    private const int green = 2;
+    private const int red = 3;
+    private const int blue = 4;
+    private const int yellow = 5;
+
+    public static void RotateFaceCW(string[,] square)
     {
         //rotate corners
-        string tempCorner1 = square[0,0];
-        string tempCorner2 = square[2,2];
+        string tempCorner = square[0,0];
         square[0,0] = square[2,0];
+        square[2,0] = square[2,2];
         square[2,2] = square[0,2];
-        square[0,2] = tempCorner1;
-        square[2,0] = tempCorner2;
+        square[0,2] = tempCorner;
         
         //rotate edges
-        string tempEdge1 = square[0,1];
-        string tempEdge2 = square[2,1];
+        string tempEdge = square[0,1];
         square[0,1] = square[1,0];
+        square[1,0] = square[2,1];
         square[2,1] = square[1,2];
-        square[1,0] = tempEdge1;
-        square[1,2] = tempEdge2;
+        square[1,2] = tempEdge;
+    }
+    public static void RotateFaceCCW(string[,] square)
+    {
+        //rotate corners
+        string tempCorner = square[0,0];
+        square[0,0] = square[0,2];
+        square[0,2] = square[2,2];
+        square[2,2] = square[2,0];
+        square[2,0] = tempCorner;
         
+        //rotate edges
+        string tempEdge = square[0,1];
+        square[0,1] = square[1,2];
+        square[1,2] = square[2,1];
+        square[2,1] = square[1,0];
+        square[1,0] = tempEdge;
+    }
+    public static void RotateLayerCW(string face)
+    {
+        
+    }
+    public static void RotateRight(string[][,] cube)
+    {
+        //Red Face gets rotated
+        RotateFaceCW(cube[red]);
+        string topRight =    cube[green][0,2];
+        string centerRight = cube[green][1,2];
+        string bottomRight = cube[green][2,2];
+        cube[green][0,2] = cube[yellow][0,2];
+        cube[green][1,2] = cube[yellow][1,2];
+        cube[green][2,2] = cube[yellow][2,2];
+        cube[yellow][0,2] = cube[blue][2,0];
+        cube[yellow][1,2] = cube[blue][1,0];
+        cube[yellow][2,2] = cube[blue][0,0];
+        cube[blue][0,0] = cube[white][2,2];
+        cube[blue][1,0] = cube[white][1,2];
+        cube[blue][2,0] = cube[white][0,2];
+        cube[white][0,2] = topRight;
+        cube[white][1,2] = centerRight;
+        cube[white][2,2] = bottomRight;
     }
     public static void Print(string[][,] cube)
     {
